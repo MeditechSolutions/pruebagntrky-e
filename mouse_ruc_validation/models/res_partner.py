@@ -86,10 +86,14 @@ class Partner(models.Model):
     _inherit = 'res.partner'
     
     commercial_name = fields.Char(string="Nombre comercial", index=True)
-    registration_name = fields.Char(string="Razón social", related="name", store=True, readonly=False, index=True)
+    registration_name = fields.Char(string="Razón social", index=True)
     l10n_latam_identification_type_id = fields.Many2one(string="Tipo Doc. Id.")
     vat = fields.Char(string="Nro. Doc. Id.")
     state = fields.Selection(string="State", selection=[('habido','Habido'),('nhabido','No Habido')])
+    
+    @api.onchange('name')
+    def _cambio_nombre_razon_social(self) :
+        self.registration_name = self.name
     
     #@api.depends('is_company', 'name', 'parent_id.name', 'type', 'company_name', 'commercial_name')
     #def _compute_display_name(self) :
