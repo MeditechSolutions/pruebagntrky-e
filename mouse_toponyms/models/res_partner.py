@@ -6,6 +6,10 @@ from odoo.exceptions import UserError, ValidationError, Warning
 class Partner(models.Model):
     _inherit = "res.partner"
     
+    street_name = fields.Char(compute=False, inverse=False)
+    street_number = fields.Char(compute=False, inverse=False)
+    street_number2 = fields.Char(compute=False, inverse=False)
+    
     #Override the original onchange functions of base and l10n_latam_base with super()
     @api.onchange('country_id')
     def _onchange_country(self) :
@@ -14,6 +18,10 @@ class Partner(models.Model):
             self.state_id = False
         else :
             self.zip = False
+    
+    @api.onchange('country_id')
+    def _onchange_country_id(self):
+        m = self.country_id
     
     @api.onchange('state_id')
     def _onchange_state(self) :
@@ -35,6 +43,12 @@ class Partner(models.Model):
     @api.onchange('l10n_pe_district')
     def _onchange_l10n_pe_district(self) :
         self.zip = self.l10n_pe_district.code or self.city_id.l10n_pe_code or self.state_id.code
+    
+    def write(self, vals):
+        res = super(Partner, self).write(vals)
+        if 'street' not in vals and ('street_name' in vals or 'street_number' in vals or 'street_number2' in vals) :
+            self._set_street()
+        return res
     
     # New functions for the new fields
     @api.model
