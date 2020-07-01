@@ -8,6 +8,6 @@ class Company(models.Model) :
     
     def write(self, values) :
         res = super(Company, self).write(values)
-        if self.country_id and self.env.ref('base.pe') in self.country_id :
+        if self.partner_id.country_id and self.env.ref('base.pe') in self.partner_id.country_id :
             self.env['res.currency.rate'].sudo().calcular_tasa_dolar_euro_bcr()
         return res

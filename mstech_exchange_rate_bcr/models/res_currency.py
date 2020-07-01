@@ -61,7 +61,7 @@ class CurrencyRate(models.Model) :
             lista_codigos_bcr.append('PD04647PD')
         compas = company_ids
         if not compas :
-            compas = self.env['res.company'].sudo().search([('country_id','!=',self.env.ref('base.pe').id)])
+            compas = self.env['res.company'].sudo().search([]).filtered(lambda r: r.partner.id.country_id and self.env.ref('base.pe') == r.partner_id.country_id)
         if lista_codigos_bcr and compas :
             serie_PD04639PD = -1
             if 'PD04639PD' in lista_codigos_bcr :
