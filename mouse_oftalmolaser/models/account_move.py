@@ -8,7 +8,7 @@ class AccountMove(models.Model) :
     
     def action_post(self) :
         for record in self.filtered(lambda r: r.company_id.country_id == self.env.ref('base.pe', False)) :
-            if self.env['pos.order'].sudo().search([('account_move','=',record.id)]) and record.partner_id.vat :
+            if record.pos_order_ids.ids and record.partner_id.vat :
                 if len(record.partner_id.vat) == 11 :
                     diario = self.env['account.journal'].search([('company_id','in',record.company_id.ids),
                                                                  ('type','=','sale'),
