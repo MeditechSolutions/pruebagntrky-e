@@ -13,6 +13,7 @@ Este módulo permite realizar los requisitos solicitados por la empresa Oftalmol
     'website': 'https://www.mouse.pe',
     'depends' : [
         'mouse_einvoice_base',
+        'point_of_sale',
     ],
     'data': [],
     'installable': True,
