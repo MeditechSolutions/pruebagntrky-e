@@ -24,6 +24,9 @@ class AccountMove(models.Model) :
                                                                  ('l10n_latam_document_type_id','=',self.env.ref('mouse_einvoice_base.pe_03').id)], limit=1)
                     if diario :
                         record.einvoice_journal_id = diario
-                        record.partner_id.l10n_latam_identification_type_id = self.env.ref('l10n_pe.it_DNI')
+                        if len(record.partner_id.vat) == 8 :
+                            record.partner_id.l10n_latam_identification_type_id = self.env.ref('l10n_pe.it_DNI')
+                        else :
+                            record.partner_id.l10n_latam_identification_type_id = self.env.ref('l10n_latam_base.it_fid')
         res = super(AccountMove, self).post()
         return res
