@@ -51,11 +51,16 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account_debit_note.view_move_form_debit"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='invoice_origin']" position="after">
-                    <field name="credit_origin_id" attrs="{'invisible': [('credit_origin_id', '=', False)]}"/>
-                </xpath>
                 <xpath expr="//button[@name='action_view_debit_notes']/div/span[2]" position="replace">
                     <span class="o_stat_text">Débito(s)</span>
+                </xpath>
+                <xpath expr="//button[@name='%(account_debit_note.action_view_account_move_debit)d']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', '|', '|', ('credit_origin_id','!=',False), ('debit_origin_id','!=',False), ('type','not in',('out_invoice', 'in_invoice')), ('state','!=','posted')]}</attribute>
+                    <attribute name="string">Agregar nota de débito</attribute>
+                </xpath>
+                
+                <xpath expr="//field[@name='invoice_origin']" position="after">
+                    <field name="credit_origin_id" attrs="{'invisible': [('credit_origin_id', '=', False)]}"/>
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button type="object" class="oe_stat_button" name="action_view_credit_notes" icon="fa-plus" attrs="{'invisible': [('credit_note_count', '=', 0)]}">
@@ -66,12 +71,12 @@
                     </button>
                 </xpath>
                 <xpath expr="//button[@name='action_reverse']" position="attributes">
-                    <attribute name="attrs">{'invisible': ['|', '|', '|', ('credit_origin_id','!=',False), ('debit_origin_id','!=',False), ('type', 'not in', ('out_invoice', 'in_invoice')), ('state', '!=', 'posted')]}</attribute>
+                    <attribute name="attrs">{'invisible': ['|', '|', '|', ('credit_origin_id','!=',False), ('debit_origin_id','!=',False), ('type','not in',('out_invoice', 'in_invoice')), ('state','!=','posted')]}</attribute>
                     <attribute name="string">Agregar nota de crédito</attribute>
                 </xpath>
-                <xpath expr="//button[@name='%(account_debit_note.action_view_account_move_debit)d']" position="attributes">
-                    <attribute name="attrs">{'invisible': ['|', '|', '|', ('credit_origin_id','!=',False), ('debit_origin_id','!=',False), ('type', 'not in', ('out_invoice', 'in_invoice')), ('state', '!=', 'posted')]}</attribute>
-                    <attribute name="string">Agregar nota de débito</attribute>
+                
+                <xpath expr="//button[@name='button_cancel']" position="attributes">
+                    <attribute name="attrs">{'invisible' : ['|', '|', '|', ('id','=',False), ('state','!=','posted'), ('credit_note_count','>',0), ('sent_sunat','!=',False)]}</attribute>
                 </xpath>
             </field>
         </record>
