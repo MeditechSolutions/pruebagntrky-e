@@ -6,8 +6,8 @@ from odoo.exceptions import UserError, ValidationError, Warning
 class PosOrder(models.Model) :
     _inherit = 'pos.order'
     
-    def invoice_data_get(self, ids) :
-        invoice = self.browse(ids).sudo().account_move
+    def invoice_data_get(self) :
+        invoice = self.sudo().account_move
         invoice_data = invoice.read(['partner_id', 'l10n_latam_document_type_id', 'number', 'amount_tax', 'amount_untaxed', 'amount_total', 'company_id'])
         if invoice :
             invoice_data = invoice_data[0]
