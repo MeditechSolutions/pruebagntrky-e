@@ -21,6 +21,7 @@ odoo.define('mouse_oftalmolaser.models', function (require) {
                         }).then(function(result_dict) {
                             if (result_dict.length) {
                                 let invoice = result_dict[0].account_move;
+                                console.log(JSON.stringify(invoice[1]));
                                 self.get_order().invoice_id = invoice[1];
                             }
                         }).catch(function(error) {
