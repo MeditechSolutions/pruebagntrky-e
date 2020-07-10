@@ -2,9 +2,35 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError, Warning
+import qrcode
+from io import BytesIO
+import base64
+from lxml import etree
 
 class AccountMove(models.Model) :
     _inherit = 'account.move'
+    
+    def _create_qr(self, ver, box, bor, data) :
+        qr = qrcode.QRCode(version=ver, error_correction=qrcode.constants.ERROR_CORRECT_Q, box_size=box, border=bor)
+        qr.add_data(data)
+        if ver is None :
+            qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        return img
+    
+    def generate_qr_base_64(self) :
+        self.ensure_one()
+        self.action_signxml()
+        listado = [self.company_id.vat or '', self.journal_id.l10n_latam_document_type_id.code or ''] + self.name.split('-')
+        listado = listado + [format(self.amount_tax or 0, '.2f'), format(self.amount_total or 0, '.2f'), self.invoice_date.strftime('%Y-%m-%d')]
+        listado = listado + [self.partner_id.l10n_latam_identification_type_id.l10n_pe_vat_code or '', self.partner_id.vat or '']
+        lxml_doc = etree.fromstring(self.signed_xml.encode('utf-8'), parser=etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8'))
+        listado = listado + [lxml_doc.xpath("//ds:DigestValue", namespaces={'ds': 'http://www.w3.org/2000/09/xmldsig#'})[0].text, '']
+        img = self._create_qr(ver=None, box=4, bor=2, data='|'.join(listado))
+        buffered = BytesIO()
+        img.save(buffered)
+        img_string = base64.b64encode(buffered.getvalue())
+        return img_string
     
     def post(self) :
         for record in self.filtered(lambda r: r.company_id.country_id == self.env.ref('base.pe')) :
