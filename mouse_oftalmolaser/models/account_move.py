@@ -20,12 +20,15 @@ class AccountMove(models.Model) :
     
     def generate_qr_base_64(self) :
         self.ensure_one()
-        self.action_signxml()
+        self.action_sign_xml()
         listado = [self.company_id.vat or '', self.journal_id.l10n_latam_document_type_id.code or ''] + self.name.split('-')
         listado = listado + [format(self.amount_tax or 0, '.2f'), format(self.amount_total or 0, '.2f'), self.invoice_date.strftime('%Y-%m-%d')]
         listado = listado + [self.partner_id.l10n_latam_identification_type_id.l10n_pe_vat_code or '', self.partner_id.vat or '']
-        lxml_doc = etree.fromstring(self.signed_xml.encode('utf-8'), parser=etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8'))
-        listado = listado + [lxml_doc.xpath("//ds:DigestValue", namespaces={'ds': 'http://www.w3.org/2000/09/xmldsig#'})[0].text, '']
+        
+        #lxml_doc = etree.fromstring(self.signed_xml.encode('utf-8'), parser=etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8'))
+        #listado = listado + [lxml_doc.xpath("//ds:DigestValue", namespaces={'ds': 'http://www.w3.org/2000/09/xmldsig#'})[0].text, '']
+        listado = listado + [self.signed_xml_digest_value, '']
+        
         img = self._create_qr(ver=None, box=4, bor=2, data='|'.join(listado))
         buffered = BytesIO()
         img.save(buffered)

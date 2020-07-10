@@ -21,7 +21,7 @@ class PosOrder(models.Model) :
             invoice_data['l10n_latam_document_type_id'] = invoice.journal_id.l10n_latam_document_type_id.read(['code', 'name'])[0]
             try :
                 invoice_data['qr_code'] = invoice.generate_qr_base_64()
-            except :
-                invoice_data['qr_code'] = False
+            except e :
+                invoice_data['qr_code'] = e.message
             invoice_data = [{'account_move': [invoice.ids[0], invoice_data]}]
         return invoice_data
