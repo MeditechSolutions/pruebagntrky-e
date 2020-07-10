@@ -26,7 +26,6 @@ odoo.define('mouse_oftalmolaser.models', function (require) {
                         }).then(function(result_dict) {
                             if (result_dict.length) {
                                 let invoice = result_dict[0].account_move;
-                                console.log(JSON.stringify(invoice));
                                 self.get_order().invoice_id = invoice[1];
                             }
                         }).catch(function(error) {
@@ -43,9 +42,9 @@ odoo.define('mouse_oftalmolaser.models', function (require) {
         export_for_printing: function() {
             var self = this;
             var receipt = SuperOrder.export_for_printing.call(this);
-            if (self.invoice_id) {
-                var invoice_id = self.invoice_id;
-                receipt.invoice_id = invoice_id;
+            if (self.invoice_id || this.invoice_id) {
+                var invoice = self.invoice_id;
+                receipt.invoice_id = invoice;
             }
             return receipt;
         },
