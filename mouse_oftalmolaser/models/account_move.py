@@ -20,6 +20,8 @@ class AccountMove(models.Model) :
     
     def generate_qr_base_64(self) :
         self.ensure_one()
+        if not self.unsigned_xml :
+            self.action_create_xml()
         self.action_sign_xml()
         listado = [self.company_id.vat or '', self.journal_id.l10n_latam_document_type_id.code or ''] + self.name.split('-')
         listado = listado + [format(self.amount_tax or 0, '.2f'), format(self.amount_total or 0, '.2f'), self.invoice_date.strftime('%Y-%m-%d')]
