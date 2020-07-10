@@ -15,8 +15,13 @@ Este módulo permite realizar los requisitos solicitados por la empresa Oftalmol
         'mouse_einvoice_base',
         'point_of_sale',
     ],
-    'data': [],
+    'data': [
+        'views/mouse_oftalmolaser.xml',
+    ],
+    'qweb': [
+        'static/src/xml/pos.xml',
+    ],
     'installable': True,
     'auto_install': False,
-    "sequence": 1,
+    'sequence': 1,
 }
