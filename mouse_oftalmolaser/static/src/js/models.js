@@ -39,7 +39,9 @@ odoo.define('mouse_oftalmolaser.models', function (require) {
             var receipt = SuperOrder.export_for_printing.call(this);
             if (self.invoice_id || this.invoice_id) {
                 var invoice = self.invoice_id;
-                invoice['qr_code'] = 'data:image/jpeg;base64,' + invoice.qr_code;
+                if (invoice.qr_code) {
+                    invoice['qr_code'] = 'data:image/png;base64,' + invoice.qr_code;
+                }
                 receipt.invoice_id = invoice;
             }
             return receipt;
