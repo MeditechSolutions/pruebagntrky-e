@@ -13,6 +13,6 @@ class PosOrder(models.Model) :
             invoice_data = invoice_data[0]
             invoice_data['partner_id'] = invoice.partner_id.read(['l10n_latam_identification_type_id', 'name', 'registration_name', 'vat', 'commercial_name'])[0]
             invoice_data['l10n_latam_identification_type_id'] = invoice.partner_id.l10n_latam_identification_type_id.read(['l10n_pe_vat_code', 'name'])[0]
-            invoice_data['l10n_latam_document_type_id'] = invoice.partner_id.l10n_latam_identification_type_id.read(['code', 'name'])[0]
+            invoice_data['l10n_latam_document_type_id'] = invoice.journal_id.l10n_latam_document_type_id.read(['code', 'name'])[0]
             invoice_data = [{'account_move': [ids, invoice_data]}]
         return invoice_data
