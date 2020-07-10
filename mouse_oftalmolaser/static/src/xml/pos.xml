@@ -4,6 +4,7 @@
         <t t-jquery=".pos-receipt-contact" t-operation="append">
             <t t-if="order.to_invoice">
                 <t t-if="receipt.invoice_id">
+                    <br/>
                     <div><t t-esc="receipt.invoice_id.name"/></div>
                     <div>Cliente: <t t-esc="receipt.invoice_id.partner_id.registration_name"/></div>
                     <div><t t-esc="receipt.invoice_id.partner_id.l10n_latam_identification_type_id.name"/> - <t t-esc="receipt.invoice_id.partner_id.vat"/></div>
