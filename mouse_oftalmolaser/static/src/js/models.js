@@ -40,13 +40,13 @@ odoo.define('mouse_oftalmolaser.models', function (require) {
     
     pos_model.Order = pos_model.Order.extend({
         export_for_printing: function() {
-            var self = this
-            var receipt = SuperOrder.export_for_printing.call(this)
+            var self = this;
+            var receipt = SuperOrder.export_for_printing.call(this);
             if (self.invoice_id) {
-                var invoice_id = self.invoice_id
-                receipt.invoice_id = invoice
+                var invoice_id = self.invoice_id;
+                receipt.invoice_id = invoice_id;
             }
-            return receipt
+            return receipt;
         },
     });
     
