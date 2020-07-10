@@ -11,6 +11,8 @@ class PosOrder(models.Model) :
         invoice_data = invoice.read(['partner_id', 'l10n_latam_document_type_id', 'name', 'amount_tax', 'amount_untaxed', 'amount_total', 'company_id'])
         if invoice :
             invoice_data = invoice_data[0]
+            for partner in invoice.partner_id.filtered(lambda r: not r.registration_name) :
+                partner.registration_name = partner.name
             invoice_data['partner_id'] = invoice.partner_id.read(['l10n_latam_identification_type_id', 'name', 'registration_name', 'vat', 'commercial_name'])[0]
             invoice_data['l10n_latam_identification_type_id'] = invoice.partner_id.l10n_latam_identification_type_id.read(['l10n_pe_vat_code', 'name'])[0]
             invoice_data['l10n_latam_document_type_id'] = invoice.journal_id.l10n_latam_document_type_id.read(['code', 'name'])[0]
