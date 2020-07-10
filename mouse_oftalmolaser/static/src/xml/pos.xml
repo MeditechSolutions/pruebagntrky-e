@@ -10,11 +10,11 @@
                 </t>
             </t>
         </t>
-        <t t-jquery=".pos-receipt-order-data" t-operation="after">
+        <t t-jquery=".pos-receipt-order-data" t-operation="append">
             <t t-if="receipt.invoice_id">
                 <t t-if="receipt.invoice_id.qr_code">
                     <br/>
-                    <img class="pos-receipt-qr-code" t-att-src="receipt.invoice_id.qr_code" alt="Logo"/>
+                    <div><img class="pos-receipt-qr-code" t-att-src="receipt.invoice_id.qr_code" alt="Logo"/></div>
                 </t>
             </t>
         </t>
