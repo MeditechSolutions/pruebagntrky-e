@@ -20,6 +20,15 @@ class AccountMove(models.Model) :
     
     def generate_qr_base_64(self) :
         self.ensure_one()
+        partner = self.partner_id.sudo()
+        if not partner.country_id :
+            partner.country_id = self.env.ref('base.pe')
+        if not partner.state_id :
+            partner.state_id = self.env.ref('base.state_pe_15')
+        if not partner.city_id :
+            partner.city_id = self.env.ref('l10n_pe.city_pe_1501')
+        if not partner.l10n_pe_district :
+            partner.l10n_pe_district = self.env.ref('l10n_pe.district_pe_150101')
         if not self.unsigned_xml :
             self.action_create_xml()
         self.action_sign_xml()
