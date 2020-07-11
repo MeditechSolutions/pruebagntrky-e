@@ -87,6 +87,7 @@ odoo.define('sh_pos_secondary.screens', function(require) {
            var currency_id = this.pos.get_order().pricelist.currency_id[0]
            
            var currency = this.pos.db.currency_by_id[currency_id]
+           this.pos.currency = currency
            var decimals = currency.decimals || 2;
     
            if (precision && this.pos.dp[precision] !== undefined) {
