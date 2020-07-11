@@ -15,6 +15,7 @@
     "application" : True,
     "data" : [
             "views/templates.xml",
+            "views/views.xml",
             ],
     "auto_install":False,
     "installable" : True,
