@@ -19,71 +19,6 @@ odoo.define('sh_pos_secondary.screens', function(require) {
     var SuperDB = DB.prototype;
     var SuperPosBaseWidget = PosBaseWidget.prototype;
     
-    models.load_models({
-        model: 'res.currency',
-        fields: ['name', 'symbol', 'position', 'rounding', 'rate'],
-        loaded: function(self, currencies){
-            self.currency = currencies[0];
-            if (self.currency.rounding > 0 && self.currency.rounding < 1) {
-                self.currency.decimals = Math.ceil(Math.log(1.0 / self.currency.rounding) / Math.log(10));
-            } else {
-                self.currency.decimals = 0;
-            }
-            self.company_currency = currencies[1];
-            self.db.add_currencies(currencies);
-        },
-    });
-    
-    models.load_fields('product.pricelist',['currency_id']);
-    
-    DB = DB.extend({
-        init: function(options) {
-            SuperPosModel.init.call(this, options);
-            this.currencies = [];
-            this.currency_by_id = {};
-        },
-        add_currencies: function(currencies) {
-            if (!currencies instanceof Array) {
-            	currencies = [currencies];
-            }
-            for (var i = 0, len = currencies.length; i < len; i++) {
-            	var currency = currencies[i];
-                this.currencies.push(currency);
-                this.currency_by_id[currency.id] = currency
-            }
-        },
-      
-    });
-    
-    PosBaseWidget = PosBaseWidget.extend({
-    	convert_currency: function(from_currency, currency, amount){
-	   		if (parseFloat(currency.rate) > 0.0 && parseFloat(from_currency.rate) > 0.0) {
-                amount = parseFloat(amount) * (parseFloat(currency.rate) / parseFloat(from_currency.rate))
-            return amount
-	   	 },
-	    format_currency_no_symbol: function(amount, precision) {
-            var currency_id = this.pos.get_order().pricelist.currency_id[0];
-            var currency = this.pos.db.currency_by_id[currency_id];
-            if (this.pos && this.pos.currency) {
-                this.pos.currency = currency;
-            }
-            var amount = SuperPosBaseWidget.format_currency_no_symbol.call(this, amount, precision)
-	        return amount;
-	    },
-	    format_currency: function(amount, precision) {
-	    	var currency_id = this.pos.get_order().pricelist.currency_id[0];
-	        var currency = this.pos.db.currency_by_id[currency_id];
-	    	var from_currency_id = this.pos.config.currency_id[0];
-	    	var from_currency = this.pos.db.currency_by_id[from_currency_id];
-            if (this.pos && this.pos.currency) {
-                this.pos.currency = currency;
-            }
-	    	amount = this.convert_currency(from_currency, currency, amount);
-	        amount = SuperPosBaseWidget.format_currency.call(this, amount, precision);
-            return amount;
-	    },
-    });
-    
     //models.load_models({
     //    model: 'res.currency',
     //    fields: ['name','symbol','position','rounding','rate'],
@@ -170,4 +105,69 @@ odoo.define('sh_pos_secondary.screens', function(require) {
 	//    },
     //	
     //});
+    
+    models.load_models({
+        model: 'res.currency',
+        fields: ['name', 'symbol', 'position', 'rounding', 'rate'],
+        loaded: function(self, currencies){
+            self.currency = currencies[0];
+            if (self.currency.rounding > 0 && self.currency.rounding < 1) {
+                self.currency.decimals = Math.ceil(Math.log(1.0 / self.currency.rounding) / Math.log(10));
+            } else {
+                self.currency.decimals = 0;
+            }
+            self.company_currency = currencies[1];
+            self.db.add_currencies(currencies);
+        },
+    });
+    
+    models.load_fields('product.pricelist',['currency_id']);
+    
+    DB = DB.extend({
+        init: function(options) {
+            SuperPosModel.init.call(this, options);
+            this.currencies = [];
+            this.currency_by_id = {};
+        },
+        add_currencies: function(currencies) {
+            if (!currencies instanceof Array) {
+            	currencies = [currencies];
+            }
+            for (var i = 0; len = currencies.length; i < len; i++) {
+            	var currency = currencies[i];
+                this.currencies.push(currency);
+                this.currency_by_id[currency.id] = currency;
+            }
+        },
+      
+    });
+    
+    PosBaseWidget = PosBaseWidget.extend({
+    	convert_currency: function(from_currency, currency, amount) {
+	   		if (parseFloat(currency.rate) > 0.0 && parseFloat(from_currency.rate) > 0.0) {
+                amount = parseFloat(amount) * (parseFloat(currency.rate) / parseFloat(from_currency.rate));
+            return amount
+	   	 },
+	    format_currency_no_symbol: function(amount, precision) {
+            var currency_id = this.pos.get_order().pricelist.currency_id[0];
+            var currency = this.pos.db.currency_by_id[currency_id];
+            if (this.pos && this.pos.currency) {
+                this.pos.currency = currency;
+            }
+            var amount = SuperPosBaseWidget.format_currency_no_symbol.call(this, amount, precision);
+	        return amount;
+	    },
+	    format_currency: function(amount, precision) {
+	    	var currency_id = this.pos.get_order().pricelist.currency_id[0];
+	        var currency = this.pos.db.currency_by_id[currency_id];
+	    	var from_currency_id = this.pos.config.currency_id[0];
+	    	var from_currency = this.pos.db.currency_by_id[from_currency_id];
+            if (this.pos && this.pos.currency) {
+                this.pos.currency = currency;
+            }
+	    	amount = this.convert_currency(from_currency, currency, amount);
+	        amount = SuperPosBaseWidget.format_currency.call(this, amount, precision);
+            return amount;
+	    },
+    });
 });
