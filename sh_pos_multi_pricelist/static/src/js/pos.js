@@ -106,6 +106,27 @@ odoo.define('sh_pos_secondary.screens', function(require) {
     //    
     //});
     
+    DB = DB.extend({
+        init: function(options) {
+            SuperPosModel.init.call(this, options);
+            this.currencies = [];
+            this.currency_by_id = {};
+        },
+    });
+    
+    DB.include({
+        add_currencies: function(currencies) {
+            if (!currencies instanceof Array) {
+                currencies = [currencies];
+            }
+            for (var i = 0; i < currencies.length; i++) {
+                var currency = currencies[i];
+                this.currencies.push(currency);
+                this.currency_by_id[currency.id] = currency;
+            }
+        },
+    });
+    
     models.load_models({
         model: 'res.currency',
         fields: ['name', 'symbol', 'position', 'rounding', 'rate'],
@@ -122,24 +143,6 @@ odoo.define('sh_pos_secondary.screens', function(require) {
     });
     
     models.load_fields('product.pricelist',['currency_id']);
-    
-    DB = DB.extend({
-        init: function(options) {
-            SuperPosModel.init.call(this, options);
-            this.currencies = [];
-            this.currency_by_id = {};
-        },
-        add_currencies: function(currencies) {
-            if (!currencies instanceof Array) {
-                currencies = [currencies];
-            }
-            for (var i = 0; i < currencies.length; i++) {
-                var currency = currencies[i];
-                this.currencies.push(currency);
-                this.currency_by_id[currency.id] = currency;
-            }
-        },
-    });
     
     PosBaseWidget = PosBaseWidget.extend({
         convert_currency: function(from_currency, currency, amount) {
