@@ -133,13 +133,12 @@ odoo.define('sh_pos_secondary.screens', function(require) {
             if (!currencies instanceof Array) {
             	currencies = [currencies];
             }
-            for (var i = 0; len = currencies.length; i < len; i++) {
+            for (var i = 0; i < currencies.length; i++) {
             	var currency = currencies[i];
                 this.currencies.push(currency);
                 this.currency_by_id[currency.id] = currency;
             }
         },
-      
     });
     
     PosBaseWidget = PosBaseWidget.extend({
