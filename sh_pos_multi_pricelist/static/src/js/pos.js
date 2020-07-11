@@ -1,23 +1,20 @@
 odoo.define('sh_pos_secondary.screens', function(require) {
     "use strict";
    
-    //var gui = require('point_of_sale.gui');
+    var gui = require('point_of_sale.gui');
     var models = require('point_of_sale.models');
-    //var core = require('web.core');
+    var core = require('web.core');
     var PosBaseWidget = require('point_of_sale.BaseWidget');
     var DB = require('point_of_sale.DB');
-    //var concurrency = require('web.concurrency');
-    //var utils = require('web.utils');
-    //var field_utils = require('web.field_utils');
+    var concurrency = require('web.concurrency');
+    var utils = require('web.utils');
+    var field_utils = require('web.field_utils');
     
-    //var Mutex = concurrency.Mutex;
-    //var round_di = utils.round_decimals;
-    //var round_pr = utils.round_precision;
-    //var QWeb = core.qweb;
-    //var _t = core._t;
-    
-    var SuperDB = DB.prototype;
-    var SuperPosBaseWidget = PosBaseWidget.prototype;
+    var Mutex = concurrency.Mutex;
+    var round_di = utils.round_decimals;
+    var round_pr = utils.round_precision;
+    var QWeb = core.qweb;
+    var _t = core._t;
     
     models.load_models({
        model: 'res.currency',
@@ -105,6 +102,9 @@ odoo.define('sh_pos_secondary.screens', function(require) {
        },
        
     });
+    
+    //var SuperDB = DB.prototype;
+    //var SuperPosBaseWidget = PosBaseWidget.prototype;
     
     //DB = DB.extend({
     //    init: function(options) {
