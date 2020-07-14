@@ -181,7 +181,7 @@
 										<tr class="reorder_product_body" t-foreach="widget.options.orderlines || []" t-as="item">
 											<td><t t-esc='item.product_id[1]' /></td>
 											<td class="entered_item_qty" style="    padding: 3px;">
-												<input id ="entered_item_qty" t-att-line-id='item.id' t-att-qty-id='item.product_uom_qty' type="text" class="input-field" name="code"></input>
+												<input id ="entered_item_qty" t-att-line-id='item.id' t-att-value='item.product_uom_qty' type="text" class="input-field" name="code"></input>
 											</td>
 										</tr>
 									</tbody>
