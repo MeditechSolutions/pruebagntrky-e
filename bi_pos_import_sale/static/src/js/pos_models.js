@@ -15,10 +15,11 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 	// Load Models
 	models.load_models({
 		model:  'sale.order',
-		fields: ['name','partner_id','user_id','amount_untaxed','state',
-				 'order_line','amount_tax','amount_total','company_id','date_order'],
+		fields: ['name','partner_id','user_id','amount_untaxed',
+                 'state','order_line','amount_tax','amount_total',
+                 'company_id','currency_id','date_order'],
 		domain: function(self) {
-            var days = self.config.load_orders_days
+            var days = self.config.load_orders_days;
             if (days > 0) {
                 var today= new Date();
                 today.setDate(today.getDate() - days);
@@ -100,7 +101,9 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 						orders[i].partner_id = [0, '-'];
 					}
 					if (((orders[i].name.toLowerCase()).indexOf(search_text) != -1) || ((orders[i].name.toLowerCase()).indexOf(search_text) != -1) || ((orders[i].partner_id[1].toLowerCase()).indexOf(search_text) != -1)) {
-						selected_search_orders = selected_search_orders.concat(orders[i]);
+                        if (orders[i].company_id[0] == this.pos.company.id && orders[i].currency_id[0] == this.pos.default_pricelist.currency_id[0]) {
+                            selected_search_orders = selected_search_orders.concat(orders[i]);
+                        }
 					}
 				}
 				orders = selected_search_orders;
