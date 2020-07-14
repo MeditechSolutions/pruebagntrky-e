@@ -1,6 +1,6 @@
 odoo.define('bi_pos_import_sale.import_sale', function(require) {
 	"use strict";
-
+    
 	var models = require('point_of_sale.models');
 	var screens = require('point_of_sale.screens');
 	var core = require('web.core');
@@ -11,34 +11,31 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 	var round_pr = utils.round_precision;
 	var rpc = require('web.rpc');
 	var _t = core._t;
-
+    
 	// Load Models
 	models.load_models({
 		model:  'sale.order',
 		fields: ['name','partner_id','user_id','amount_untaxed','state',
 				 'order_line','amount_tax','amount_total','company_id','date_order'],
-		domain: function(self) 
-				{
-					var days = self.config.load_orders_days
-					if(days > 0)
-					{
-						var today= new Date();
-						today.setDate(today.getDate() - days);
-						var dd = today.getDate();
-						var mm = today.getMonth()+1; //January is 0!
-
-						var yyyy = today.getFullYear();
-						if(dd<10){
-							dd='0'+dd;
-						} 
-						if(mm<10){
-							mm='0'+mm;
-						} 
-						var today = yyyy+'-'+mm+'-'+dd+" "+ "00" + ":" + "00" + ":" + "00";
-						return [['date_order', '>=',today]];
-					}					
-				},
-		loaded: function(self,order){
+		domain: function(self) {
+            var days = self.config.load_orders_days
+            if (days > 0) {
+                var today= new Date();
+                today.setDate(today.getDate() - days);
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+                if (dd<10) {
+                    dd='0'+dd;
+                }
+                if (mm<10) {
+                    mm='0'+mm;
+                }
+                var today = yyyy+'-'+mm+'-'+dd+" "+ "00" + ":" + "00" + ":" + "00";
+                return [['date_order', '>=',today]];
+            }
+        },
+		loaded: function(self,order) {
 			var i=0;
 			self.all_orders_list = order;
 			self.get_orders_by_id = {};
@@ -47,7 +44,7 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 			});
 		},
 	});
-
+    
 	models.load_models({
 		model: 'sale.order.line',
 		fields: ['order_id', 'product_id', 'discount', 'product_uom_qty', 'price_unit','price_subtotal'],
@@ -57,9 +54,7 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 			for (var i = 0; i < orders.length; i++) {
 				order_lines = order_lines.concat(orders[i]['order_line']);
 			}
-			return [
-				['id', 'in', order_lines]
-			];
+			return [['id', 'in', order_lines]];
 		},
 		loaded: function(self, sale_order_line) {
 			self.all_orders_line_list = sale_order_line;
@@ -67,20 +62,19 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 			sale_order_line.forEach(function(line) {
 				self.get_lines_by_id[line.id] = line;
 			});
-
 			self.sale_order_line = sale_order_line;
 		},
 	});
-
+    
 	var SaleOrderButtonWidget = screens.ActionButtonWidget.extend({
 		template: 'SaleOrderButtonWidget',
-
+        
 		button_click: function() {
 			var self = this;
 			this.gui.show_screen('see_all_orders_screen_widget', {});
 		},
 	});
-
+    
 	screens.define_action_button({
 		'name': 'See All Orders Button Widget',
 		'widget': SaleOrderButtonWidget,
@@ -88,19 +82,17 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 			return true;
 		},
 	});
-
+    
 	// SeeAllOrdersScreenWidget start
-
 	var SeeAllOrdersScreenWidget = screens.ScreenWidget.extend({
 		template: 'SeeAllOrdersScreenWidget',
 		init: function(parent, options) {
 			this._super(parent, options);
 			//this.options = {};
 		},
-
-		render_list_orders: function(orders, search_input){
+		render_list_orders: function(orders, search_input) {
 			var self = this;			
-			if(search_input != undefined && search_input != '') {
+			if (search_input != undefined && search_input != '') {
 				var selected_search_orders = [];
 				var search_text = search_input.toLowerCase()
 				for (var i = 0; i < orders.length; i++) {
@@ -126,25 +118,22 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 				content.appendChild(ordersline);
 			}
 		},
-
 		get_last_day_orders: function () {
-			var days = this.pos.config.load_orders_days					
+			var days = this.pos.config.load_orders_days
 			var today= new Date();
 			today.setDate(today.getDate() - days);
 			var dd = today.getDate();
-			var mm = today.getMonth()+1; //January is 0!
-
+			var mm = today.getMonth() + 1; //January is 0!
 			var yyyy = today.getFullYear();
-			if(dd<10){
+			if (dd<10) {
 				dd='0'+dd;
-			} 
-			if(mm<10){
+			}
+			if (mm<10) {
 				mm='0'+mm;
-			} 
+			}
 			var today = yyyy+'-'+mm+'-'+dd+" "+ "00" + ":" + "00" + ":" + "00";
 			return today
 		},
-		
 		show: function(options) {
 			var self = this;
 			this._super(options);
@@ -161,7 +150,7 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 				rpc.query({
 					model: 'pos.order',
 					method: 'search_all_sale_order',
-					args: [1,config_id,l_date],
+					args: [1, config_id, l_date],
 				}).then(function(output) {
 					self.pos.all_orders_list = output
 					orders = output;
@@ -178,19 +167,15 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 					});
 				});
 			});
-
-			
 			var selectedorderlines = [];
 			var client = false
-			
 			this.$('.back').click(function(){
 				self.gui.show_screen('products');
 			});
-			this.$('.client-list-contents').delegate('.sale-order','click',function(event){
-
+			this.$('.client-list-contents').delegate('.sale-order', 'click', function(event) {
 				var order_id = parseInt(this.id);
 				selectedOrder = null;
-				for(var i = 0, len = Math.min(orders.length,1000); i < len; i++) {
+				for (var i = 0, len = Math.min(orders.length,1000); i < len; i++) {
 					if (orders[i] && orders[i].id == order_id) {
 						selectedOrder = orders[i];
 					}
@@ -198,43 +183,32 @@ odoo.define('bi_pos_import_sale.import_sale', function(require) {
 				var orderlines = [];
 				var order_line_data = self.pos.db.all_orders_line_list;
 				selectedOrder.order_line.forEach(function(line_id) {
-					
-					for(var y=0; y<orders_lines.length; y++){
-						if(orders_lines[y]['id'] == line_id){
+					for (var y=0; y<orders_lines.length; y++) {
+						if (orders_lines[y]['id'] == line_id) {
 						   orderlines.push(orders_lines[y]); 
 						}
 					}
-		
 				});
-				self.gui.show_popup('sale_order_popup_widget', { 'orderlines': orderlines, 'order': selectedOrder });
-				
+				self.gui.show_popup('sale_order_popup_widget', {'orderlines': orderlines, 'order': selectedOrder});
 			});
-
-
 			this.$('.client-list-contents').delegate('.orders-line-name', 'click', function(event) {
 				var order_id = parseInt(this.id);
 				selectedOrder = null;
-				for(var i = 0, len = Math.min(orders.length,1000); i < len; i++) {
+				for (var i = 0, len = Math.min(orders.length,1000); i < len; i++) {
 					if (orders[i] && orders[i].id == order_id) {
 						selectedOrder = orders[i];
 					}
 				}
 				var orderlines = [];
-			
 				selectedOrder.order_line.forEach(function(line_id) {
-					
-					for(var y=0; y<orders_lines.length; y++){
-						if(orders_lines[y]['id'] == line_id){
-						   orderlines.push(orders_lines[y]); 
+					for (var y=0; y<orders_lines.length; y++) {
+						if (orders_lines[y]['id'] == line_id) {
+						   orderlines.push(orders_lines[y]);
 						}
 					}
-		
 				});
-
-				self.gui.show_popup('see_order_details_popup_widget', {'orderline': orderlines, 'order': [selectedOrder] });
-				
+				self.gui.show_popup('see_order_details_popup_widget', {'orderline': orderlines, 'order': [selectedOrder]});
 			});
-
 			this.$('.client-list-contents').delegate('.orders-line-date', 'click', function(event) {
 				var order_id = parseInt(this.id);
 				selectedOrder = null;
