@@ -61,7 +61,7 @@ class InheritPOSOrder(models.Model):
         return final_lines
     
     def sale_order_line(self):
-        orderlines = self.env['sale.order.line'].search([])
+        orderlines = self.env['sale.order.line'].sudo().search([])
         final_lines = []
         for l in orderlines:
             vals1 = {
