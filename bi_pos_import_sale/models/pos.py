@@ -26,7 +26,7 @@ class InheritPOSOrder(models.Model):
         domain = [('company_id','=',config.company_id.id), ('currency_id','=',config.currency_id.id)]
         if config.load_orders_days > 0 :
             domain.append(('date_order','>=',last_day))
-        sale_orders = self.env['sale.order'].search(domain)
+        sale_orders = self.env['sale.order'].sudo().search(domain)
         for s in sale_orders:
             vals1 = {
                 'id':s.id,
