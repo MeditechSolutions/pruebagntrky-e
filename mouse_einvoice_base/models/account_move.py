@@ -571,7 +571,7 @@ class AccountMove(models.Model) :
                     <cac:AddressLine>
                         <cbc:Line><![CDATA['''
         
-        if not partner.street :
+        if not partner.street_name :
             partner.street_name = "-"
         
         xml_doc = xml_doc + self.partner_id.street_name.upper()
