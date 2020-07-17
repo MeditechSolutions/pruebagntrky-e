@@ -4,6 +4,9 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError, Warning
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import datetime
+import pytz
+
+DEFAULT_TIMEZONE = 'America/Lima'
 
 class PosConfiguration(models.Model):
     _inherit = 'pos.config'
@@ -39,7 +42,8 @@ class InheritPOSOrder(models.Model):
                 'amount_tax':s.amount_tax,
                 'amount_total':s.amount_total,
                 'company_id':[s.company_id.id,s.company_id.name],
-                'date_order':s.date_order,
+                #'date_order':s.date_order,
+                'date_order':s.date_order.astimezone(pytz.timezone(self.env.user.tz or DEFAULT_TIMEZONE)).strftime('%d/%m/%Y, %H:%M:%S'),
             }
             final_order.append(vals1)
         return final_order
