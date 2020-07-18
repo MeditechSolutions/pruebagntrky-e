@@ -8,6 +8,6 @@ class ResPartner(models.Model):
     
     def check_vat_pe(self, vat):
         res = super(ResPartner, self).check_vat_pe(vat)
-        if not res and vat.isdigit() and len(vat) == 8 :
+        if not res and vat.isdigit() and len(vat) != 11 :
             res = True
         return res
