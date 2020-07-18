@@ -1488,7 +1488,8 @@ class AccountMove(models.Model) :
             signed_invoice_dictionary = record.signature_xml(record.unsigned_xml, sign_path, sign_pass)
             record.write({'signed_xml': signed_invoice_dictionary['signed_xml'],
                           'signed_xml_binary': base64.b64encode(signed_invoice_dictionary['signed_xml'].encode()),
-                          'signed_xml_binary_filename': invoice_company.partner_id.vat + '-' + record.journal_id.l10n_latam_document_type_id.code + '-' + record.name + (invoice_company.beta_service and ' - BETA' or '') + '.xml',
+                          #'signed_xml_binary_filename': invoice_company.partner_id.vat + '-' + record.journal_id.l10n_latam_document_type_id.code + '-' + record.name + (invoice_company.beta_service and ' - BETA' or '') + '.xml',
+                          'signed_xml_binary_filename': record.unsigned_xml_binary_filename[:-4] + (invoice_company.beta_service and ' - BETA' or '') + record.unsigned_xml_binary_filename[-4:],
                           'signed_xml_digest_value': signed_invoice_dictionary['hash_cpe']})
     
     def action_create_xml(self) :
