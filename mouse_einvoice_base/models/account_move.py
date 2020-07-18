@@ -1565,7 +1565,8 @@ class AccountMove(models.Model) :
                     path_ws = "https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl"
             
             ruc = invoice_company.partner_id.vat
-            filepath = ruc + "-" + record.journal_id.l10n_latam_document_type_id.code + "-" + record.name
+            filepath = record.unsigned_xml_binary_filename[:-4]
+            #filepath = ruc + "-" + record.journal_id.l10n_latam_document_type_id.code + "-" + record.name
             respuesta = record.enviar_documento(ruc, user_sol, pass_sol, record.signed_xml, filepath, path_ws)
             if respuesta['cod_sunat'] == '0' :
                 filepath = {'sunat_answer': respuesta['msj_sunat'],
